@@ -46,8 +46,12 @@ app.use(cors({
     'http://localhost:3000',
     'https://*.railway.app',
     'https://*.vercel.app',
-    /\.redmugsy\.com$/
-  ],
+    /\.redmugsy\.com$/,
+    // Allow Railway deployment domains
+    /.*\.railway\.app$/,
+    // Allow Railway public domains
+    process.env.RAILWAY_PUBLIC_DOMAIN ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}` : null
+  ].filter(Boolean),
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'x-requested-with']
