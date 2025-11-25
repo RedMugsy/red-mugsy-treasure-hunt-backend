@@ -1,27 +1,7 @@
-# Railway Deployment Configuration
-# This file is automatically detected by Railway
-
-# Build command
-build = "npm run build"
-
-# Start command
-start = "npm start"
-
-# Health check endpoint
-healthcheck = "/health"
-
-# Port configuration (Railway sets PORT automatically)
-port = "${PORT}"
-
-# Restart policy
-restart = "on-failure"
-
-# Environment variables Railway should set automatically:
-# - DATABASE_URL (PostgreSQL)
-# - RAILWAY_PUBLIC_DOMAIN
-# - RAILWAY_STATIC_URL
-# - PORT
+[build]
+  builder = "NIXPACKS"
 
 [deploy]
-  # Deploy only when package.json or src/ changes
-  detect = ["package.json", "src/", "prisma/"]
+  healthcheckPath = "/health"
+  restartPolicyType = "ON_FAILURE"
+  startCommand = "npm start"
