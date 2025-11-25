@@ -49,9 +49,9 @@ app.use(cors({
     /\.redmugsy\.com$/,
     // Allow Railway deployment domains
     /.*\.railway\.app$/,
-    // Allow Railway public domains
-    process.env.RAILWAY_PUBLIC_DOMAIN ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}` : null
-  ].filter(Boolean),
+    // Add Railway public domain if available
+    ...(process.env.RAILWAY_PUBLIC_DOMAIN ? [`https://${process.env.RAILWAY_PUBLIC_DOMAIN}`] : [])
+  ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'x-requested-with']
