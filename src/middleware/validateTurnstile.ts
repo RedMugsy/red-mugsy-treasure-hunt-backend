@@ -22,8 +22,9 @@ export const validateTurnstile = async (
 
     if (!process.env.TURNSTILE_SECRET_KEY) {
       console.error('TURNSTILE_SECRET_KEY not configured');
-      // In development, skip verification if not configured
-      if (process.env.NODE_ENV === 'development') {
+      // In development or Railway staging, skip verification if not configured
+      if (process.env.NODE_ENV === 'development' || process.env.RAILWAY_ENVIRONMENT) {
+        console.warn('Turnstile validation bypassed - no secret key configured');
         req.turnstileVerified = true;
         return next();
       }
@@ -64,15 +65,15 @@ export const validateTurnstile = async (
     next();
   } catch (error) {
     console.error('Turnstile validation error:', error);
-    
-    // In development, allow bypass on error
-    if (process.env.NODE_ENV === 'development') {
-      console.warn('Turnstile validation bypassed in development mode');
+
+    // In development, Railway environment, or when explicitly disabled, allow bypass on error
+    if (process.env.NODE_ENV === 'development' || 
+        process.env.RAILWAY_ENVIRONMENT || 
+        process.env.DISABLE_TURNSTILE === 'true') {
+      console.warn('Turnstile validation bypassed due to error or environment setting');
       req.turnstileVerified = true;
       return next();
-    }
-
-    return res.status(500).json({
+    }    return res.status(500).json({
       error: 'Bot verification service temporarily unavailable.',
       code: 'TURNSTILE_SERVICE_ERROR'
     });

@@ -4,12 +4,24 @@ import prisma from '@/config/database';
 
 const router = Router();
 
-// Basic health check
-router.get('/', async (req: Request, res: Response) => {
+// Basic health check - Railway compatible (no DB dependency)
+router.get('/', (req: Request, res: Response) => {
+  res.json({
+    status: 'healthy',
+    timestamp: new Date().toISOString(),
+    version: '1.0.0',
+    environment: process.env.NODE_ENV || 'development',
+    uptime: process.uptime(),
+    message: 'Red Mugsy Treasure Hunt Backend is running'
+  });
+});
+
+// Database health check
+router.get('/db', async (req: Request, res: Response) => {
   try {
     // Check database connection
     await prisma.$queryRaw`SELECT 1`;
-    
+
     res.json({
       status: 'healthy',
       timestamp: new Date().toISOString(),
@@ -23,12 +35,10 @@ router.get('/', async (req: Request, res: Response) => {
       status: 'unhealthy',
       timestamp: new Date().toISOString(),
       database: 'disconnected',
-      error: process.env.NODE_ENV === 'development' ? error : 'Database connection failed'
+      error: process.env.NODE_ENV === 'development' ? error : 'Database connection failed'   
     });
   }
-});
-
-// Detailed health check for monitoring
+});// Detailed health check for monitoring
 router.get('/detailed', async (req: Request, res: Response) => {
   const healthInfo: any = {
     status: 'healthy',
