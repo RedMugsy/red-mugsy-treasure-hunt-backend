@@ -1,0 +1,13 @@
+# Railway ignore file - ensure source files are included
+# Only ignore files that shouldn't be deployed
+
+.git/
+.github/
+node_modules/
+*.md
+.env.example
+.vscode/
+.idea/
+coverage/
+*.test.ts
+*.spec.ts
